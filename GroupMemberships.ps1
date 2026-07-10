@@ -18,19 +18,18 @@ $Results = foreach ($Group in $Groups) {
     # defines variables     
     $GroupMembers = $null
     $GroupMembers = Get-ADGroupmember $Group
-    $Count = ($GroupMembers | Measure-Object).count
 
     # Sets group detail if group is empty
     If (!$GroupMembers) { 
     
         [pscustomobject]@{ 
-            GroupName        = $Group.name
-            GroupDescription = $Group.description
-            NumberOfMembers  = $Count
-            MemberName       = "-"
-            MemberID         = "-"                                        
-            MemberDept       = "-"
-            MemberTitle      = "-"
+            GroupName            = $Group.name
+            GroupDescription     = $Group.description
+            MemberName           = $null
+            MemberSamAccountName = $null                                  
+            MemberDept           = $null
+            MemberTitle          = $null
+            MemberManagerName    = $null
         } 
     }
     
@@ -44,25 +43,19 @@ $Results = foreach ($Group in $Groups) {
             $Manager = $null
             If ($MemberAd.manager) { $Manager = (get-aduser $MemberAd.manager -ErrorAction SilentlyContinue).name }
 
-        
             # creates a custom object containing data   
             [pscustomobject]@{
 
-                GroupName        = $Group.name
-                GroupDescription = $Group.description
-                NumberOfMembers  = $Count
-                MemberName       = $GroupMember.name
-                MemberID         = $MemberAd.samaccountname
-                MemberDept       = $MemberAD.Department
-                MemberTitle      = $MemberAD.title
-                Manager          = $Manager
-
+                GroupName         = $Group.name
+                GroupDescription  = $Group.description
+                MemberName        = $GroupMember.name
+                MemberID          = $MemberAd.samaccountname
+                MemberDept        = $MemberAD.Department
+                MemberTitle       = $MemberAD.title
+                MemberManagerName = $Manager
             }
-            
         }                                                           
-     
-    }
-                    
+    }                    
 } 
 
 # outputs the result as a table 
