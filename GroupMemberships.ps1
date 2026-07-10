@@ -41,7 +41,7 @@ $Results = foreach ($Group in $Groups) {
             $MemberAD = get-aduser $GroupMember.sid -Properties title, department, manager
 
             $Manager = $null
-            If ($MemberAd.manager) { $Manager = (get-aduser $MemberAd.manager -ErrorAction SilentlyContinue).name }
+            If ($MemberAd.manager) { $Manager = ( get-aduser $MemberAd.manager -ErrorAction SilentlyContinue).name }
 
             # creates a custom object containing data   
             [pscustomobject]@{
